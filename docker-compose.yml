@@ -6,7 +6,7 @@ services:
     container_name: postgresdb
     environment:
       POSTGRES_USER:  amaraldb
-      POSTGRES_PASSOWORD: Amaral10
+      POSTGRES_PASSWORD: Amaral10
       POSTGRES_DB:  nestdb
     ports:
       - "5432:5432"  

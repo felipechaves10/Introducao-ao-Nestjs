@@ -1,39 +1,21 @@
 import {Body, Controller, Get, Param, Post, Put} from '@nestjs/common'
-import { UserService } from './users.service'
+import { UsersService } from './users.service'
 
-@Controller('/user')
+@Controller('/users')
 export class UsersController {
 
-    private userService: UserService
+    private usersService: UsersService
 
-    constructor(userService: UserService){
-        this.userService = userService
+    constructor(userService: UsersService){
+        this.usersService = userService
     }
 
-    @Get()
-    findAllUsers(){
-        return this.userService.findAll()
-    }
-
-    @Get(':id')
-    findOneUser(@Param('id') id:string){
-        return this.userService.findOne(parseInt(id))
-    }
-
+    
+    // Rota de criar usuário
     @Post()
-    createUser(@Body() user: {name:string, email:string}){
-        return this.userService.create(user)
+    create(@Body() data: any) {
+        return this.usersService.create(data)
     }
 
-    @Put()
-    updadeUser(@Body() user: {name:string, email:string}) {
-        return this
-    }
-
-    /**Exercício rápido: 
-        Crie uma rota para atualizar usuário, recebendo 
-        o Id do usuário a ser atualizado e as novas
-        informações de usuário.  */
-
-
+    
 }
