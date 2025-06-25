@@ -16,6 +16,16 @@
     const document = SwaggerModule.createDocument(app, config);
     SwaggerModule.setup('api', app, document); // Acessível em http://localhost:3000/api
 
+
+app.useGlobalPipes(
+    new ValidationPipe({
+        whitelist: true, // remova propriedades não decorada no DTO
+        forbidNonWhitelisted: true, // rotorn ero se enviar propriedade
+
+    })
+)
+
     await app.listen(3001);
     }
-    bootstrap();
+import { ValidationPipe } from '@nestjs/common';
+bootstrap();
