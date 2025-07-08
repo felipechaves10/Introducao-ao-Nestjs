@@ -1,9 +1,11 @@
-import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common'
+import {Body, Controller, Delete, Get, Param, Post, Put, UseGuards} from '@nestjs/common'
 import { UsersService } from './users.service'
 import { CreateUserDto } from './dto/createUser.dto'
-import { ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger'
+import { ApiBearerAuth, ApiBody, ApiOperation, ApiResponse } from '@nestjs/swagger'
 import { UpadateUserDto } from './dto/updateUser.dto'
-
+import { JwtAuthGuard } from 'src/auth/jwt.grard'
+@UseGuards(JwtAuthGuard)
+@ApiBearerAuth()
 @Controller('/users')
 export class UsersController {
 
@@ -15,14 +17,15 @@ export class UsersController {
 
     
     // Rota de criar usuário
-    @Post()
-    @ApiOperation({ summary: 'Criar um novo usuário!' })
-    @ApiBody({ type: CreateUserDto })
-    @ApiResponse({ status: 201, description: 'Usuário criado com sucesso!' })
-    create(@Body() data: CreateUserDto) {
-        return this.usersService.create(data)
-    }
+    // @Post()
+    // @ApiOperation({ summary: 'Criar um novo usuário!' })
+    // @ApiBody({ type: CreateUserDto })
+    // @ApiResponse({ status: 201, description: 'Usuário criado com sucesso!' })
+    // create(@Body() data: CreateUserDto) {
+    //     return this.usersService.create(data)
+    // }
 
+    
     @Get()
     @ApiOperation({ summary: 'Vizualizar usuário!' })
     @ApiResponse({ status: 200 })

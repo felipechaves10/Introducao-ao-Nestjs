@@ -16,4 +16,9 @@ export class CreateUserDto {
     })
     @IsEmail({}, { message: 'Email inválido!' })
     email: string
+
+
+    @IsString()
+    @IsNotEmpty({ message: 'campo obrigatorio'})
+    password: string
 }

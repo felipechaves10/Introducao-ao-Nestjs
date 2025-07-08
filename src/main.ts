@@ -11,10 +11,20 @@
         .setDescription('Documentação da API de usuários com NestJS + Prisma + Swagger')
         .setVersion('1.0')
         .addTag('users') // Tag opcional para categorizar as rotas
+        .addBearerAuth({
+            type: "http",
+            scheme: "bearer",
+           bearerFormat: "JWT", 
+           name: "authorization",
+           in: "header"
+        })
+        
+        
+        
         .build();
 
     const document = SwaggerModule.createDocument(app, config);
-    SwaggerModule.setup('api', app, document); // Acessível em http://localhost:3000/api
+    SwaggerModule.setup('api', app, document); // 
 
 
 app.useGlobalPipes(
