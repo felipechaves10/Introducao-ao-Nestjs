@@ -1,0 +1,22 @@
+# Etapa 01: imagem base
+FROM node:20-alpine
+
+# Etapa 02: diretório de trabalho
+WORKDIR /app
+
+# Etapa 03: copiar arquivos de dependência
+COPY package*.json ./
+RUN npm install
+
+# Etapa 04: copiar tudo
+COPY . .
+
+# Verifica se os arquivos foram copiados corretamente
+RUN ls -la && ls -la src && ls -la prisma && cat tsconfig.json
+
+# Etapa 05: gerar prisma client e compilar
+RUN npx prisma generate
+RUN npm run build
+
+# Expor porta
+EXPOSE 3000

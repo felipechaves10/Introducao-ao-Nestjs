@@ -4,7 +4,7 @@ import { AuthController } from './auth.controller';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './jwt.strategy';
-
+import { OAuth2Client } from 'google-auth-library';
 @Module({
   imports: [JwtModule.register({
     secret: "meu_segredo",signOptions: {expiresIn: "1d"}
