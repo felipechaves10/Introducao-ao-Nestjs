@@ -11,13 +11,14 @@ import {
     UploadedFiles,
     UseInterceptors,
     BadRequestException,
+    Query,
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { PlaceService } from './place.service';
 import { CloudinaryService } from './cloudinary.service';
 import { CreatePlaceDto } from './dto/create-place.dto';
 import { File as MulterFile } from 'multer';
-import { ApiBody, ApiConsumes, ApiResponse, ApiOperation } from '@nestjs/swagger';
+import { ApiBody, ApiConsumes, ApiResponse, ApiOperation, ApiQuery } from '@nestjs/swagger';
 import { UpdatePlaceDto } from './dto/update-place.dto';
 
 @Controller('places')
@@ -31,6 +32,18 @@ export class PlaceController {
     findAll() {
         return this.placeService.findAll();
     }
+
+    
+    @Get("paginated")
+    @ApiOperation({ summary: "listar locais paginados" })
+    @ApiQuery({ name: 'page', required: false, type: Number, example: 1 })
+    @ApiQuery({ name: 'limit', required: false, type: Number, example: 10 })
+    async findpaginated(@Query("page") page = 1, @Query('limit') limit = 10) {
+        const parsePage = Math.max(1, Number(page))
+        const parselimit = Math.min(50, Math.max(1, Number(limit)))//limite de se
+        return this.placeService.findpaginated(parsePage, parselimit)
+    }
+
 
     @Post()
     @UseInterceptors(FileFieldsInterceptor([{ name: 'images', maxCount: 3 }]))
@@ -114,7 +127,7 @@ export class PlaceController {
 
     @Delete(':id')
     @ApiOperation({ summary: 'Deletar local e imagens no Cloudinary' })
-     @ApiResponse({ status: 200, description: 'Place deletado com sucesso' })
+    @ApiResponse({ status: 200, description: 'Place deletado com sucesso' })
     async deletePlace(@Param('id') id: string) {
         return this.placeService.delete(id);
     }

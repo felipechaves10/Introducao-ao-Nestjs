@@ -1,8 +1,10 @@
 import { Injectable, BadRequestException } from '@nestjs/common';
-import { Place } from '@prisma/client';
+import { Place, placeType } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { ImageObject } from './types/image-object';
 import { CloudinaryService } from './cloudinary.service';
+import { last } from 'rxjs';
+import { match } from 'assert';
 
 
 @Injectable()
@@ -16,6 +18,25 @@ export class PlaceService {
     return this.prisma.place.findMany();
   }
 
+
+  async findpaginated(page: number, limit: number) {
+    const [places, total] = await this.prisma.$transaction([
+      this.prisma.place.findMany({
+        skip: (page - 1) * limit, take: limit,
+        orderBy: { created_at: "desc" }
+      }),
+      this.prisma.place.count()
+    ]);
+    return {
+      data: places,
+      meta: {
+        total,
+        page,
+        lastpage: Math.ceil(total / limit)
+      }
+    };
+  }
+
   async create(data: { name: string, type: any, phone: string, latitude: number, longitude: number, images: ImageObject[] }) {
     return this.prisma.place.create({ data });
   }
@@ -25,7 +46,7 @@ export class PlaceService {
     if (!place) throw new BadRequestException('Local não encontrado');
 
     let images = place.images as ImageObject[];
-    
+
     // Se forem enviadas novas imagens
     if (newImages && newImages.length > 0) {
       // Deletar imagens antigas
@@ -51,7 +72,7 @@ export class PlaceService {
 
     //apago as imagens do cloudinary
     await Promise.all(images.map(img => this.cloudinaryService.deleteImage(img.public_id)));
-   //apgo os resgito
+    //apgo os resgito
     await this.prisma.place.delete({ where: { id } });
   }
 

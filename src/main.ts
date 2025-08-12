@@ -35,7 +35,7 @@ app.useGlobalPipes(
     })
 )
 
-    await app.listen(3001);
+    await app.listen(3000);
     }
 import { ValidationPipe } from '@nestjs/common';
 bootstrap();

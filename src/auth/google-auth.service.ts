@@ -1,0 +1,35 @@
+import { Injectable, UnauthorizedException } from '@nestjs/common';
+import { OAuth2Client } from 'google-auth-library';
+import { AuthService } from './auth.service';
+
+
+@Injectable()
+export class googleservice{
+    private client: OAuth2Client;
+    constructor(private readonly authService: AuthService) {
+        this.client = new OAuth2Client(process.env.GOOGLE_CRIENT_ID);
+    }
+
+    async verify(token: string) {
+        const ticket = await this.client.verifyIdToken({
+            idToken: token,
+            audience: process.env.GOOGLE_CRIENT_ID,
+        });
+        
+    const payload = ticket.getPayload();
+    if (!payload) throw new UnauthorizedException('Token inválido!');
+    
+    const {sub, email, name} = payload;
+
+    const user = await this.authService.findOrCreateGoogleUser({
+        googleId: sub,
+        email,
+        name
+    })
+
+    return this.authService.singJwtForUser(user);
+  }
+    }
+
+
+
